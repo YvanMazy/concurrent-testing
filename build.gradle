@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'be.darkkraft.concurrenttesting'
+group = 'be.darkkraft'
 version = '1.0'
 
 repositories {
