@@ -19,7 +19,7 @@ void testAtomicCounter() {
 
 To use the project as a dependency, you can add it using [Maven](https://maven.apache.org/)
 or [Gradle](https://gradle.org/).
-<br>**Last version**: [![Release](https://jitpack.io/v/Darkkraft/concurrent-testing.svg)](https://jitpack.io/#Darkkraft/concurrent-testing)
+<br>**Last version**: [![Release](https://jitpack.io/v/YvanMazy/concurrent-testing.svg)](https://jitpack.io/#YvanMazy/concurrent-testing)
 
 ```groovy
 repositories {
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.Darkkraft:concurrent-testing:VERSION'
+    implementation 'com.github.YvanMazy:concurrent-testing:VERSION'
 }
 ```
 
@@ -40,7 +40,7 @@ dependencies {
 </repositories>
 <dependencies>
     <dependency>
-        <groupId>com.github.Darkkraft</groupId>
+        <groupId>com.github.YvanMazy</groupId>
         <artifactId>concurrent-testing</artifactId>
         <version>VERSION</version>
     </dependency>
