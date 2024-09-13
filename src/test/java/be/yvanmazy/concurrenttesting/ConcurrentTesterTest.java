@@ -22,7 +22,7 @@ class ConcurrentTesterTest {
         int success = 0;
         for (int i = 0; i < REPETITION; i++) {
             final Counter counter = new NonAtomicCounter();
-            ConcurrentTester.start(counter::increment, THREADS, ITERATIONS);
+            ConcurrentTester.run(counter::increment, THREADS, ITERATIONS);
             if (counter.get() == EXPECTED) {
                 success++;
             }
@@ -33,7 +33,7 @@ class ConcurrentTesterTest {
     @RepeatedTest(REPETITION)
     void testAtomicCounter() {
         final Counter counter = new AtomicCounter();
-        ConcurrentTester.start(counter::increment, THREADS, ITERATIONS);
+        ConcurrentTester.run(counter::increment, THREADS, ITERATIONS);
         assertEquals(EXPECTED, counter.get());
     }
 

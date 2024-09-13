@@ -15,27 +15,27 @@ public final class ConcurrentTester {
         throw new IllegalAccessException("You cannot instantiate a utility class");
     }
 
-    public static void start(final ThrowableRunnable runnable, final int threads) {
-        start(runnable, threads, 1, 0L);
+    public static void run(final ThrowableRunnable runnable, final int threads) {
+        run(runnable, threads, 1, 0L);
     }
 
-    public static void start(final ThrowableRunnable runnable, final int threads, final int iterations) {
-        start(runnable, threads, iterations, 0L);
+    public static void run(final ThrowableRunnable runnable, final int threads, final int iterations) {
+        run(runnable, threads, iterations, 0L);
     }
 
-    public static void start(final ThrowableRunnable runnable, final int threads, final long timeout, final TimeUnit unit) {
-        start(runnable, threads, 1, timeout, unit);
+    public static void run(final ThrowableRunnable runnable, final int threads, final long timeout, final TimeUnit unit) {
+        run(runnable, threads, 1, timeout, unit);
     }
 
-    public static void start(final ThrowableRunnable runnable, final int threads, final int iterations, final long timeout) {
-        start(runnable, threads, iterations, timeout, TimeUnit.MILLISECONDS);
+    public static void run(final ThrowableRunnable runnable, final int threads, final int iterations, final long timeout) {
+        run(runnable, threads, iterations, timeout, TimeUnit.MILLISECONDS);
     }
 
-    public static void start(final ThrowableRunnable runnable,
-                             final int threads,
-                             final int iterations,
-                             final long timeout,
-                             final TimeUnit unit) {
+    public static void run(final ThrowableRunnable runnable,
+                           final int threads,
+                           final int iterations,
+                           final long timeout,
+                           final TimeUnit unit) {
         Objects.requireNonNull(runnable, "runnable must not be null");
         if (timeout > 0L && unit == null) {
             throw new NullPointerException("unit must not be null");
