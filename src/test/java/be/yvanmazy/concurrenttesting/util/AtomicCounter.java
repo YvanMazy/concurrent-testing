@@ -12,6 +12,11 @@ public class AtomicCounter implements Counter {
     }
 
     @Override
+    public void decrement() {
+        this.counter.decrementAndGet();
+    }
+
+    @Override
     public int get() {
         return this.counter.get();
     }

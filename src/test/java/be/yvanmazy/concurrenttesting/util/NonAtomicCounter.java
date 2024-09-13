@@ -10,6 +10,11 @@ public class NonAtomicCounter implements Counter {
     }
 
     @Override
+    public void decrement() {
+        this.counter--;
+    }
+
+    @Override
     public int get() {
         return this.counter;
     }
