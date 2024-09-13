@@ -19,15 +19,15 @@ class ConcurrentTesterTest {
 
     @Test
     void testNonAtomicCounter() {
-        int fail = 0;
+        int success = 0;
         for (int i = 0; i < REPETITION; i++) {
             final Counter counter = new NonAtomicCounter();
             ConcurrentTester.start(counter::increment, THREADS, ITERATIONS);
             if (counter.get() == EXPECTED) {
-                fail++;
+                success++;
             }
         }
-        assertNotEquals(REPETITION, fail);
+        assertNotEquals(REPETITION, success);
     }
 
     @RepeatedTest(REPETITION)
