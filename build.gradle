@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'be.darkkraft'
+group = 'be.yvanmazy'
 version = '1.0'
 
 repositories {

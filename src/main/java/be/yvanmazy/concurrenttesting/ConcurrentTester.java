@@ -1,8 +1,8 @@
-package be.darkkraft.concurrenttesting;
+package be.yvanmazy.concurrenttesting;
 
-import be.darkkraft.concurrenttesting.exception.WrappedThrowable;
-import be.darkkraft.concurrenttesting.runnable.ThrowableRunnable;
-import be.darkkraft.concurrenttesting.thread.PreparedThread;
+import be.yvanmazy.concurrenttesting.exception.WrappedThrowable;
+import be.yvanmazy.concurrenttesting.runnable.ThrowableRunnable;
+import be.yvanmazy.concurrenttesting.thread.PreparedThread;
 
 import java.util.Objects;
 import java.util.concurrent.CyclicBarrier;

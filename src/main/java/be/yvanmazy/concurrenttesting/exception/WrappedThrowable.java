@@ -1,4 +1,4 @@
-package be.darkkraft.concurrenttesting.exception;
+package be.yvanmazy.concurrenttesting.exception;
 
 public final class WrappedThrowable {
 

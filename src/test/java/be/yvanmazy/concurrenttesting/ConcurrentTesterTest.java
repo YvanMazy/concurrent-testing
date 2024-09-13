@@ -1,8 +1,8 @@
-package be.darkkraft.concurrenttesting;
+package be.yvanmazy.concurrenttesting;
 
-import be.darkkraft.concurrenttesting.util.AtomicCounter;
-import be.darkkraft.concurrenttesting.util.Counter;
-import be.darkkraft.concurrenttesting.util.NonAtomicCounter;
+import be.yvanmazy.concurrenttesting.util.AtomicCounter;
+import be.yvanmazy.concurrenttesting.util.Counter;
+import be.yvanmazy.concurrenttesting.util.NonAtomicCounter;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 

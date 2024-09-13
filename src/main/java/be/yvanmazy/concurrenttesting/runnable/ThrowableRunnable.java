@@ -1,4 +1,4 @@
-package be.darkkraft.concurrenttesting.runnable;
+package be.yvanmazy.concurrenttesting.runnable;
 
 public interface ThrowableRunnable {
 

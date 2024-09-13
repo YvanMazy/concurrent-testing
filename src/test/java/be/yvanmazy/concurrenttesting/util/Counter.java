@@ -1,4 +1,4 @@
-package be.darkkraft.concurrenttesting.util;
+package be.yvanmazy.concurrenttesting.util;
 
 public interface Counter {
 
