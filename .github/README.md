@@ -9,10 +9,10 @@ Here is a small example of use:
 @RepeatedTest(10) // To reduce randomness, use repeated test
 void testAtomicCounter() {
     final Counter counter = new AtomicCounter();
-    ConcurrentTester.start(() -> {
+    ConcurrentTester.run(() -> {
         // Code executed in different threads
         counter.increment();
-    }, THREADS, ITERATIONS);
+    }, c -> c.threads(THREADS).iterations(ITERATIONS));
     assertEquals(THREADS * ITERATIONS, counter.get());
 }
 ```
