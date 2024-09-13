@@ -2,7 +2,6 @@ package be.yvanmazy.concurrenttesting;
 
 import be.yvanmazy.concurrenttesting.exception.WrappedThrowable;
 import be.yvanmazy.concurrenttesting.runnable.ThrowableRunnable;
-import be.yvanmazy.concurrenttesting.thread.PreparedThread;
 
 import java.util.Objects;
 import java.util.concurrent.CyclicBarrier;
@@ -47,7 +46,7 @@ public final class ConcurrentTester {
         try {
             // Start all threads
             for (int i = 0; i < threads; i++) {
-                final PreparedThread thread = new PreparedThread(barrier, runnable, throwable, iterations);
+                final TestWorkerThread thread = new TestWorkerThread(barrier, runnable, throwable, iterations);
                 thread.start();
             }
             // Waits until all threads are started, this is also used to coordinate the starting of threads
