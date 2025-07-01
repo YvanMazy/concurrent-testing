@@ -39,6 +39,8 @@ final class TestWorkerThread extends Thread {
         } catch (final Throwable e) {
             // Catch any errors that the runnable may throw
             this.throwable.provide(e);
+            // Break the barrier to interrupt the other threads
+            this.barrier.reset();
         } finally {
             try {
                 this.barrier.await();

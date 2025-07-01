@@ -4,10 +4,13 @@ import be.yvanmazy.concurrenttesting.exception.WrappedThrowable;
 import be.yvanmazy.concurrenttesting.runnable.BarrierConsumer;
 import be.yvanmazy.concurrenttesting.runnable.ThrowableRunnable;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -42,6 +45,12 @@ public final class ConcurrentTester {
     private long timeout;
     private TimeUnit timeoutUnit;
 
+    private final CountDownLatch runnerLatch = new CountDownLatch(1);
+    private final WrappedThrowable globalThrowable = new WrappedThrowable();
+
+    private List<TestWorkerThread> threadList;
+    private CyclicBarrier globalBarrier;
+
     private ConcurrentTester(final BarrierConsumer task) {
         this.task = Objects.requireNonNull(task, "consumer must not be null");
     }
@@ -54,36 +63,60 @@ public final class ConcurrentTester {
         if (this.timeout > 0L && this.timeoutUnit == null) {
             throw new NullPointerException("Timeout unit must not be null");
         }
-        final WrappedThrowable throwable = new WrappedThrowable();
-        final CyclicBarrier barrier = new CyclicBarrier(this.threads + 1);
+
+        this.globalBarrier = new CyclicBarrier(this.threads + 1);
+        // Create workers threads
+        this.threadList = Stream.generate(() -> new TestWorkerThread(this.globalBarrier, this.task, this.globalThrowable, this.iterations))
+                .limit(this.threads)
+                .toList();
+
+        // Start worker threads in another thread to handle properly the timeout
+        new Thread(this::startAndAwait, "ConcurrentTester-Runner").start();
 
         try {
+            if (this.timeout > 0L) {
+                if (!this.runnerLatch.await(this.timeout, this.timeoutUnit)) {
+                    fail("Test timed out");
+                }
+            } else {
+                this.runnerLatch.await();
+            }
+
+            // Fail if there was at least one error
+            if (this.globalThrowable.hasThrowable()) {
+                fail(this.globalThrowable.get());
+            }
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (final Exception e) {
+            fail("Failed to process concurrent test runner", e);
+        } finally {
+            this.threadList.forEach(TestWorkerThread::interrupt);
+        }
+    }
+
+    private void startAndAwait() {
+        try {
             // Start all threads
-            for (int i = 0; i < this.threads; i++) {
-                final TestWorkerThread thread = new TestWorkerThread(barrier, this.task, throwable, this.iterations);
+            for (final TestWorkerThread thread : this.threadList) {
                 thread.start();
             }
             // Waits until all threads are started, this is also used to coordinate the starting of threads
             // One minute is given for the threads to start. This avoids potential deadlocks but should never be exceeded.
-            barrier.await(1, TimeUnit.MINUTES);
+            this.globalBarrier.await(1, TimeUnit.MINUTES);
 
             // Execute the after-task after all threads are started
             if (this.afterStart != null) {
-                this.afterStart.accept(barrier);
+                this.afterStart.accept(this.globalBarrier);
             }
 
-            // Wait until all threads have finished
-            if (this.timeout <= 0L) {
-                barrier.await();
-            } else {
-                barrier.await(this.timeout, this.timeoutUnit);
-            }
-            // Fail if there was at least one error
-            if (throwable.hasThrowable()) {
-                fail(throwable.get());
-            }
-        } catch (final Exception e) {
+            this.globalBarrier.await();
+        } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
+        } catch (final Throwable e) {
+            this.globalThrowable.provide(e);
+        } finally {
+            this.runnerLatch.countDown();
         }
     }
 
