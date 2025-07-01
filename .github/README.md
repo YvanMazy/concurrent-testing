@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.YvanMazy:concurrent-testing:VERSION'
+    testImplementation 'com.github.YvanMazy:concurrent-testing:VERSION'
 }
 ```
 
@@ -43,6 +43,7 @@ dependencies {
         <groupId>com.github.YvanMazy</groupId>
         <artifactId>concurrent-testing</artifactId>
         <version>VERSION</version>
+        <scope>test</scope>
     </dependency>
 </dependencies>
 ```
