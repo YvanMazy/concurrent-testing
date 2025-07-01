@@ -41,6 +41,7 @@ public final class ConcurrentTester {
 
     private int threads = 1;
     private int iterations = 1;
+    private int customBarrierParties = -1;
 
     private long timeout;
     private TimeUnit timeoutUnit;
@@ -50,6 +51,7 @@ public final class ConcurrentTester {
 
     private List<TestWorkerThread> threadList;
     private CyclicBarrier globalBarrier;
+    private CyclicBarrier customBarrier;
 
     private ConcurrentTester(final BarrierConsumer task) {
         this.task = Objects.requireNonNull(task, "consumer must not be null");
@@ -65,10 +67,13 @@ public final class ConcurrentTester {
         }
 
         this.globalBarrier = new CyclicBarrier(this.threads + 1);
+        this.customBarrier = new CyclicBarrier(this.customBarrierParties == -1 ? this.threads + 1 : this.customBarrierParties);
         // Create workers threads
-        this.threadList = Stream.generate(() -> new TestWorkerThread(this.globalBarrier, this.task, this.globalThrowable, this.iterations))
-                .limit(this.threads)
-                .toList();
+        this.threadList = Stream.generate(() -> new TestWorkerThread(this.globalBarrier,
+                this.customBarrier,
+                this.task,
+                this.globalThrowable,
+                this.iterations)).limit(this.threads).toList();
 
         // Start worker threads in another thread to handle properly the timeout
         new Thread(this::startAndAwait, "ConcurrentTester-Runner").start();
@@ -105,9 +110,17 @@ public final class ConcurrentTester {
             // One minute is given for the threads to start. This avoids potential deadlocks but should never be exceeded.
             this.globalBarrier.await(1, TimeUnit.MINUTES);
 
+            if (this.globalThrowable.hasThrowable()) {
+                return;
+            }
+
             // Execute the after-task after all threads are started
             if (this.afterStart != null) {
-                this.afterStart.accept(this.globalBarrier);
+                this.afterStart.accept(this.customBarrier);
+            }
+
+            if (this.globalThrowable.hasThrowable()) {
+                return;
             }
 
             this.globalBarrier.await();
@@ -127,6 +140,11 @@ public final class ConcurrentTester {
 
     public ConcurrentTester iterations(final int iterations) {
         this.iterations = iterations;
+        return this;
+    }
+
+    public ConcurrentTester customBarrierParties(final int customBarrierParties) {
+        this.customBarrierParties = customBarrierParties;
         return this;
     }
 

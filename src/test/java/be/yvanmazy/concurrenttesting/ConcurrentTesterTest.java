@@ -77,7 +77,7 @@ class ConcurrentTesterTest {
 
     @Test
     @Timeout(value = 5L, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
-    void testNoDeadlockOnWorkerThread() {
+    void testExceptionPropagationOnWorkerThread() {
         assertThrows(AssertionError.class, () -> ConcurrentTester.run(barrier -> {
             throw new RuntimeException("Test");
         }, c -> c.afterStart(CyclicBarrier::await).threads(THREADS)));
